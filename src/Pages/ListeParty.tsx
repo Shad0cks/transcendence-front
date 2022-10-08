@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import AvailableParty from '../css/Components/AvailableParty'
+import AvailableParty from '../Components/AvailableParty'
 import "../css/Pages/ListeParty.css"
 
 interface gamesProps {
