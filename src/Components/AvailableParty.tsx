@@ -1,6 +1,7 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 
-export default function AvailableParty({author, playersCount} : {author: string, playersCount: number}) {
+export default function AvailableParty({author, playersCount, id} : {author: string, playersCount: number, id: string}) {
   return (
     <div>
         <div className="card" style={{width: "18rem"}}>
@@ -8,7 +9,7 @@ export default function AvailableParty({author, playersCount} : {author: string,
             <div className="card-body">
                 <h5 className="card-title">{author}'s party</h5>
                 <p className="card-text">Online player : {playersCount}</p>
-                <a href="#" className="btn btn-primary">Join</a>
+                <Link to={"/game_" + id} className="btn btn-primary">Join</Link>
             </div>
         </div>
     </div>
