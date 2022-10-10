@@ -1,9 +1,8 @@
-import { homedir } from 'os'
 import React, { useEffect, useRef, useCallback } from 'react'
 import "../css/Components/PongGame.css"
 
 export default function PongGame({width, height, gameType} : {width: number, height: number, gameType: number}) {
-    
+    console.log("height : ", height, " width : ", width)
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
         interface playerProps {
@@ -19,8 +18,8 @@ export default function PongGame({width, height, gameType} : {width: number, hei
     const user1 =
     {
         x: 50,
-        y: height / 2 - 200 / 2,
-        height: 200,
+        y: height / 2 - 60 / 2,
+        height: 60,
         width: 10,
         score: 0,
         color: "WHITE", 
@@ -198,14 +197,20 @@ export default function PongGame({width, height, gameType} : {width: number, hei
     {
         if (canvasRef.current)
         {  
-            let userRect = canvasRef.current.getBoundingClientRect() 
-            console.log("bizzar " , e.clientY - userRect.top, " / height ", height, "real canvas height : ", height / canvasRef.current.getBoundingClientRect().height)
-            if (e.clientY - userRect.top - user1.height / 2 > 10 && (e.clientY - userRect.top + user1.height / 2) < height - 10)  
+            const userRect = canvasRef.current.getBoundingClientRect() 
+            const userRation =  canvasRef.current.getBoundingClientRect().height / height
+            const ratio = (e.clientY - userRect.top) / canvasRef.current.getBoundingClientRect().height
+            const userHeight = (userRation * user1.height) / 2
+
+            console.log("real posy " , (ratio * (e.clientY - userHeight))  , "real canvas height : ",canvasRef.current.getBoundingClientRect().height)
+            if ((ratio * (e.clientY - userHeight)) > 10 && (ratio * (e.clientY + userHeight)) < height - 10)  
             {
-                user1.y = e.clientY - userRect.top - (user1.height / 2) 
+                user1.y = (ratio * (e.clientY - userHeight))
             }
-            else if (e.clientY - userRect.top - user1.height / 2 > 10)
-                user1.y = height - user1.height - 10
+            else if ((ratio * (e.clientY - userHeight)) > 10)
+            {
+                user1.y = (height - user1.height - 10) 
+            }
             else 
                 user1.y = 10
         }
