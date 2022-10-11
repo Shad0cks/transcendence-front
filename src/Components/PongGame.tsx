@@ -1,8 +1,9 @@
 import React, { useEffect, useRef, useCallback } from 'react'
 import "../css/Components/PongGame.css"
 
-export default function PongGame({width, height, gameType} : {width: number, height: number, gameType: number}) {
-    console.log("height : ", height, " width : ", width)
+export default function PongGame({width, height, gameType, botLevel} : {width: number, height: number, gameType: number, botLevel: number}) {
+    let keys : boolean[] = [];
+
     const canvasRef = useRef<HTMLCanvasElement>(null)
 
         interface playerProps {
@@ -17,24 +18,24 @@ export default function PongGame({width, height, gameType} : {width: number, hei
 
     const user1 =
     {
-        x: 50,
+        x: 20,
         y: height / 2 - 60 / 2,
         height: 60,
         width: 10,
         score: 0,
         color: "WHITE", 
-        speed: 20
+        speed: 15
     }
 
     const user2 =
     {
-        x: width - 10 - 50,
+        x: width - 10 - 20,
         y: height/2 - 60/2,
         height: 60,
         width: 10,
         score: 0,
         color: "WHITE",
-        speed: 30
+        speed: 15
     }
 
     const midLine = 
@@ -60,8 +61,8 @@ export default function PongGame({width, height, gameType} : {width: number, hei
         x: width / 2,
         y: height / 2,
         r: 10,
-        color: "RED",
-        speed: 10,
+        color: "WHITE",
+        speed: 6,
         velocityX: 5,
         velocityY: 5
     } 
@@ -89,7 +90,7 @@ export default function PongGame({width, height, gameType} : {width: number, hei
             ball.velocityX = -5
             ball.velocityY = 5
         }
-        ball.speed = 10;
+        ball.speed = 6;
     }
 
     function createTerrin(context: CanvasRenderingContext2D)
@@ -144,10 +145,10 @@ export default function PongGame({width, height, gameType} : {width: number, hei
     {
         let colidePoint = 0;
         let angleCollision = 0;
-        const computer_level = 0.8
+ 
         if (gameType == 3)
         {
-            let botMove = (ball.y - (user2.y + user2.height / 2)) * computer_level
+            let botMove = (ball.y - (user2.y + user2.height / 2)) * (botLevel / 10)
 
             if (botMove - user2.height < height && botMove + user2.height > 0)
                 user2.y += botMove
@@ -163,7 +164,7 @@ export default function PongGame({width, height, gameType} : {width: number, hei
             angleCollision = colidePoint * (Math.PI / 4)
             ball.velocityX = ball.speed * Math.cos(angleCollision)
             ball.velocityY = ball.speed * Math.sin(angleCollision)
-            ball.speed += 2
+            ball.speed += 0.4
         }
         else if (player_collision(user2))
         {
@@ -189,6 +190,7 @@ export default function PongGame({width, height, gameType} : {width: number, hei
 
     function game (context: CanvasRenderingContext2D)
     {
+        whatKey()
         updateGame()
         createTerrin(context)
     }
@@ -198,11 +200,10 @@ export default function PongGame({width, height, gameType} : {width: number, hei
         if (canvasRef.current)
         {  
             const userRect = canvasRef.current.getBoundingClientRect() 
-            const userRation =  canvasRef.current.getBoundingClientRect().height / height
-            const ratio = (e.clientY - userRect.top) / canvasRef.current.getBoundingClientRect().height
+            const userRation =  userRect.height / height
+            const ratio = (e.clientY - userRect.top) / userRect.height
             const userHeight = (userRation * user1.height) / 2
 
-            console.log("real posy " , (ratio * (e.clientY - userHeight))  , "real canvas height : ",canvasRef.current.getBoundingClientRect().height)
             if ((ratio * (e.clientY - userHeight)) > 10 && (ratio * (e.clientY + userHeight)) < height - 10)  
             {
                 user1.y = (ratio * (e.clientY - userHeight))
@@ -222,8 +223,13 @@ export default function PongGame({width, height, gameType} : {width: number, hei
         { 
             let newPos = e.touches[0].clientY
             let userRect = canvasRef.current.getBoundingClientRect() 
-            if (newPos  - userRect.top - user1.height / 2 > 10 && newPos - userRect.top + user1.height / 2 < height - 10)  
-                user1.y = newPos - userRect.top - (user1.height / 2)
+
+            const userRation =  userRect.height / height
+            const ratio = (newPos - userRect.top) / userRect.height
+            const userHeight = (userRation * user1.height) / 2
+
+            if ((ratio * (newPos - userHeight)) > 10 && (ratio * (newPos + userHeight)) < height - 10)  
+                user1.y = (ratio * (newPos - userHeight))
             else if (newPos - userRect.top - user1.height / 2 > 10)
                 user1.y = height - user1.height - 10
             else 
@@ -231,24 +237,29 @@ export default function PongGame({width, height, gameType} : {width: number, hei
         }
     }, []);
 
-
+    function whatKey() 
+    {
+        if (keys[38] && user2.y > 0)
+        {
+            user2.y -= user2.speed; 
+        }
+        else if (keys[40] && user2.y + user1.height < height)
+        {
+            user2.y += user2.speed;
+        }
+    }
 
     const handleUserKeyPress = useCallback((e : KeyboardEvent) => 
     {
-        if (e.key == "ArrowUp")
-        {
-            if (user2.y > 0)
-                user2.y -= user2.speed; 
-        }
-        else if (e.key == "ArrowDown")
-        {
-            if (user2.y + user1.height < height) 
-                user2.y += user2.speed;
-        }
+        keys[e.keyCode] = true;
+    }, []);
+
+    const handleUserKeyUp = useCallback((e : KeyboardEvent) => 
+    {
+        keys[e.keyCode] = false;
     }, []);
 
     useEffect(()=>{
-        console.log(gameType)
         if (canvasRef.current)
         {
             const canvas = canvasRef.current
@@ -256,7 +267,10 @@ export default function PongGame({width, height, gameType} : {width: number, hei
             window.addEventListener("mousemove", mouseMouveEvent);
             window.addEventListener('touchmove', touchStartLister);
             if (gameType == 1)
+            {
                 window.addEventListener('keydown', handleUserKeyPress);
+                window.addEventListener('keyup', handleUserKeyUp);
+            }
             if (context)
             {
                 const frame = 60;
@@ -270,7 +284,10 @@ export default function PongGame({width, height, gameType} : {width: number, hei
                     window.removeEventListener("mousemove", mouseMouveEvent);
                     window.removeEventListener("touchmove", touchStartLister);
                     if (gameType == 1)
-                        window.addEventListener('keydown', handleUserKeyPress);
+                    {
+                        window.removeEventListener('keydown', handleUserKeyPress);
+                        window.removeEventListener('keyup', handleUserKeyUp);
+                    }
                 }
             }
         }

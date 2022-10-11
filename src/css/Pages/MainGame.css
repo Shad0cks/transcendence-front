@@ -24,6 +24,10 @@
 .mainGame_blockGame
 {
     margin: 0 auto;
-    height: 300px;
     cursor: none;
+}
+
+.mainGame_boLevel
+{
+    color: white;
 }
