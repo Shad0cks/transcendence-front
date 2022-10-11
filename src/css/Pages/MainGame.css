@@ -1,10 +1,12 @@
 .mainGame_block
 {
     margin: 0 auto;
+    position: relative;
     display: flex;
-    justify-content: space-around;
+    text-align: center;
     align-items: center;
-    flex-direction: column;
+    justify-content: center;
+
     width: 100%;
     height: 100vh;
 }
@@ -31,3 +33,55 @@
 {
     color: white;
 }
+.mainGame_Chatcontainer
+{
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 100%;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+}
+
+
+.mainGame_iconDispay
+{
+    width: 50px;
+    margin: 30px 30px 0 0;
+}
+.mainGame_ChatcontainerIn
+{
+    background-color: aliceblue;
+    height: 100%;
+    width:  20vw;
+}
+
+.mainGame_containerWithoutChat
+{
+    width: 60%;
+    margin: 0 auto;
+    
+}
+
+@media (max-width: 1000px) {
+    .mainGame_container
+    {
+        margin: 0 auto;
+        width: 50vw
+    }
+  }
+
+@media (mix-width: 1000px) {
+    .mainGame_container
+    {
+        margin: 0 auto;
+        width: 50vw
+    }
+  }
+
+  .mainGame_container
+    {
+        margin: 0 auto;
+        width: 50vw
+    }

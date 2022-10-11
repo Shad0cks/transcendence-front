@@ -239,6 +239,8 @@ export default function PongGame({width, height, gameType, botLevel} : {width: n
 
     function whatKey() 
     {
+        if (keys[38] && keys[40])
+            return ;
         if (keys[38] && user2.y > 0)
         {
             user2.y -= user2.speed; 
