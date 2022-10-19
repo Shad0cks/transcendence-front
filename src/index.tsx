@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import Home from './Pages/HomePage/Home';
+import Home from './Pages/HomePage/Header';
 import MainUserProfile from './Pages/UserProfile/MainUserProfile';
 import NotFound from './Pages/NotFound';
 import MainGame from './Pages/GamePage/MainGame';
