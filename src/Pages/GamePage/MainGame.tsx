@@ -42,7 +42,7 @@ function MainGame ()
                     <label className="form-label">Bot Level : {botLevel}</label>
                     <input type="range" className="form-range" onChange={(e) => setBotLevel(+e.target.value)} min="1" max="9" step="0.1" defaultValue="3" id="customRange2"/>
                 </div>
-                <div key={gameType | botLevel} className='mainGame_blockGame'>
+                <div key={gameType + botLevel} className='mainGame_blockGame'>
                     <PongGame width={1000} height={600} gameType={gameType} botLevel={botLevel}/>
                 </div>
             </div>
